@@ -7,6 +7,10 @@ const app = express();
 const server = createServer(app);
 const io = new Server(server);
 
+app.get("/", (_, r) => {
+	r.send("Hello World!");
+});
+
 app.get("/:id", (req, res) => {
 	const id = req.params.id;
 	if (!pastes.has(id)) {
