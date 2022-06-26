@@ -1,9 +1,11 @@
 import { Server, Socket } from "socket.io";
 import { v4 } from "uuid";
 import express from "express";
-const io = new Server();
+import { createServer } from "http";
 const pastes = new Map<string, [string, Socket]>();
 const app = express();
+const server = createServer(app);
+const io = new Server(server);
 
 app.get("/:id", (req, res) => {
 	const id = req.params.id;
@@ -18,6 +20,11 @@ app.get("/:id", (req, res) => {
 });
 
 io.on("connection", (socket) => {
+	socket.on("deletePaste", (paste: string) => {
+		pastes.has(paste) &&
+			pastes.get(paste)![1] === socket &&
+			pastes.delete(paste);
+	});
 	socket.on("createPaste", (paste: string) => {
 		if (typeof paste !== "string") {
 			return socket.disconnect(true);
@@ -28,5 +35,4 @@ io.on("connection", (socket) => {
 	});
 });
 
-io.listen(3000);
-app.listen(3001);
+server.listen(3000);
