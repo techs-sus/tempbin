@@ -1,7 +1,7 @@
-import { Server, Socket } from "socket.io";
-import { v4 } from "uuid";
 import express from "express";
 import { createServer } from "http";
+import { Server, Socket } from "socket.io";
+import { v4 } from "uuid";
 const pastes = new Map<string, [string, Socket]>();
 const app = express();
 const server = createServer(app);
